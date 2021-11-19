@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"runner-demo/runner"
 	"time"
 )
 
@@ -15,27 +16,27 @@ func main() {
 		if the execution is interruped by os interrupt
 	*/
 
-	timeout := 20 * time.Second
+	timeout := 5 * time.Second
 	r := runner.New(timeout)
-	r.Add(createTask())
-	r.Add(createTask())
-	r.Add(createTask())
+	r.Add(createTask(3))
+	r.Add(createTask(5))
+	r.Add(createTask(8))
 
 	if err := r.Start(); err != nil {
 		switch err {
 		case runner.ErrTimeout:
-			// timeout
+			fmt.Println("tasks Timedout")
 		case runner.ErrInterrupt:
-			// interrupt
+			fmt.Println("interrupt received")
 		}
 	}
 
 	fmt.Println("Processor ended")
 }
 
-func createTask() func(int) {
+func createTask(t int) func(int) {
 	return func(id int) {
 		fmt.Printf("Processor - Task #%d\n", id)
-		time.Sleep(time.Duration(id) * time.Second)
+		time.Sleep(time.Duration(t) * time.Second)
 	}
 }
