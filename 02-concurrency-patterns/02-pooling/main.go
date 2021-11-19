@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"math/rand"
+	"pooling-demo/pool"
 	"sync"
 	"time"
 )
@@ -45,6 +46,17 @@ func main() {
 		}(client)
 	}
 	wg.Wait()
+
+	fmt.Println("Second batch of operations")
+	wg.Add(3)
+	for idx := 10; idx < 13; idx++ {
+		go func(client int) {
+			doWork(client, p)
+			wg.Done()
+		}(idx)
+	}
+	wg.Wait()
+	p.Close()
 }
 
 func doWork(id int, p *pool.Pool) {
@@ -55,10 +67,10 @@ func doWork(id int, p *pool.Pool) {
 	defer p.Release(conn)
 
 	//use the connection
-	fmt.Println("Worker : ", id, " : Acquired : ", conn.ID)
+	fmt.Println("Worker : ", id, " : Acquired : ", conn.(*DBConnection).ID)
 	//do some work
 	time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
-	fmt.Println("Worker Done : ", id, " : Release : ", conn.ID)
+	fmt.Println("Worker Done : ", id, " : Release : ", conn.(*DBConnection).ID)
 }
 
 /*
