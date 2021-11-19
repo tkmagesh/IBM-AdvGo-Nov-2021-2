@@ -1,0 +1,65 @@
+Schedule :
+    Commence    : 9:30 AM
+    Tea Break   : 11:00 AM (20 mins)
+    Lunch Break : 1:00 PM (1 Hr)
+    Tea Break   : 3:30 PM (20 mins)
+    End         : 5:30 PM
+
+Methodology :
+    No powerpoints
+    Discussion & Code Demonstration
+
+Prerequisites :
+    Familiar with Golang
+
+About You
+    Name
+    Total Experience
+    Primary skillset
+    Experience in Golang 
+    Any interesting books / tv shows you read / watched recently
+    If you attended my golang training
+
+
+Earth at night
+    
+Testing & Mocking
+Error Handling Best Practices
+
+
+Concurrency in Golang
+
+Channel read is a blocking operation (except in a 'select' construct)
+Channel write operation is also a blocking operation
+    Write operation can succeed ONLY if a read operation is initiated (unless the channel is a buffered channel)
+
+func fn(){
+    ...
+    go f1()
+    time.Sleep(20 * time.Second)
+    ........
+    
+    x := <- ch
+    
+    ........
+}
+
+func f1(){
+    ch <- 100
+}
+
+
+
+
+
+
+func fn(){
+    select {
+        case x:= <- ch:
+            ...
+        case <- time.After(time.Second):
+            ...
+        default:
+            ...
+    }
+}
