@@ -26,6 +26,8 @@ func main() {
 	wg.Wait()
 	fmt.Println("main finished")
 
+	//runtime.Gosched()
+
 }
 
 func fn(ch chan int, wg *sync.WaitGroup) {
