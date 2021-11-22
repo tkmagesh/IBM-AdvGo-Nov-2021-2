@@ -3,13 +3,16 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 )
 
 func foo(w http.ResponseWriter, r *http.Request) {
+	time.Sleep(5 * time.Second)
 	w.Write([]byte("foo"))
 }
 
 func bar(w http.ResponseWriter, r *http.Request) {
+	time.Sleep(3 * time.Second)
 	w.Write([]byte("bar"))
 }
 
