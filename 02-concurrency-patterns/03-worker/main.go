@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"time"
+	"worker-demo/worker"
 )
 
 //Any object that has a "Task()" method
@@ -24,6 +25,7 @@ type NamePrinter struct {
 	name string
 }
 
+//TODO : make the tasks complete at random interval
 func (np *NamePrinter) Task() {
 	fmt.Println("Name Printer - Name : ", np.name)
 	time.Sleep(2 * time.Second)

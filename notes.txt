@@ -32,6 +32,7 @@ Concurrency in Golang
 Channel read is a blocking operation (except in a 'select' construct)
 Channel write operation is also a blocking operation
     Write operation can succeed ONLY if a read operation is initiated (unless the channel is a buffered channel)
+    Delivery of the data is guaranteed
 
 func fn(){
     ...
