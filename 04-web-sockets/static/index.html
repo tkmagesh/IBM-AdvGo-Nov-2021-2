@@ -7,18 +7,30 @@
     <title>Web Socket Demo</title>
     <script>
         (function(){
-            var ws 
+            var wsTime, wsChat 
             function init(){
-                ws = new WebSocket("ws://localhost:8080/time");
-                ws.addEventListener("open", function () {
+                wsTime = new WebSocket("ws://localhost:8080/time");
+                wsTime.addEventListener("open", function () {
                     console.log("Connected");
                 });
-                ws.addEventListener("message", function (event) {
+                wsTime.addEventListener("message", function (event) {
                     document.getElementById("currentTime").innerHTML = event.data;
                 });
-                ws.addEventListener("close", function () {
+                wsTime.addEventListener("close", function () {
                     console.log("Disconnected");
                 });
+                document.getElementById("btnLogin").addEventListener("click", onBtnLoginClick);
+            }
+
+            function onBtnLoginClick(){
+                wsChat = new WebSocket("ws://localhost:8080/chat");
+                wsChat.addEventListener("message", function (event) {
+                   document.getElementById("messages").innerHTML += event.data + "<br>";
+                });
+                document.getElementById("btnSend").addEventListener("click", onBtnSendClick);
+            }
+            function onBtnSendClick(){
+                wsChat.send(document.getElementById("txtMessage").value);
             }
             window.addEventListener("DOMContentLoaded", init);
         })();
@@ -30,6 +42,17 @@
     <div>
         Time : <span id="currentTime"></span>
     </div>
-    
+    <h3>Chat</h3>
+    <hr>
+    <button id="btnLogin">Login</button>
+    <hr>
+    <div>
+        <label for="">Message</label>
+        <input type="text" name="" id="txtMessage">
+        <button id="btnSend">Send</button>
+        <div id="messages">
+
+        </div>
+    </div>
 </body>
 </html>
