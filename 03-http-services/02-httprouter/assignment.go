@@ -19,6 +19,8 @@ DELETE - http://localhost:8080/products/1 => Delete the product with id = 1 OR 4
 /*
 json.Marshal(product) & json.Unmarshal(product)
 
+OR
+
 json.NewEncoder(w).Encode(product) => to json
 json.NewDecoder(r.Body).Decode(product) => from json
 */
