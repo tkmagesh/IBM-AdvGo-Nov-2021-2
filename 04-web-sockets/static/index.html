@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Socket Demo</title>
+    <script>
+        (function(){
+            var ws 
+            function init(){
+                ws = new WebSocket("ws://localhost:8080/time");
+                ws.addEventListener("open", function () {
+                    console.log("Connected");
+                });
+                ws.addEventListener("message", function (event) {
+                    document.getElementById("currentTime").innerHTML = event.data;
+                });
+                ws.addEventListener("close", function () {
+                    console.log("Disconnected");
+                });
+            }
+            window.addEventListener("DOMContentLoaded", init);
+        })();
+        
+
+    </script>
+</head>
+<body>
+    <div>
+        Time : <span id="currentTime"></span>
+    </div>
+    
+</body>
+</html>
