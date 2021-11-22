@@ -83,3 +83,7 @@ net/http package
     APIs for building both server & client
 
     
+Higher Order Functions
+    1. A function can be assigned as a value to a variable
+    2. A function can be passed as an argument to a function
+    3. A function can be returned by another function

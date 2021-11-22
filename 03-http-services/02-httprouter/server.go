@@ -7,6 +7,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+/* Create the logger and profile middleware */
+
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Write([]byte("Welcome!"))
 }
