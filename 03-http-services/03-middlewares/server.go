@@ -16,6 +16,16 @@ func bar(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("bar"))
 }
 
+func profile(handler func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		defer func() {
+			log.Printf("request took %s", time.Since(start))
+		}()
+		handler(w, r)
+	}
+}
+
 func logger(handler func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("request received")
@@ -25,7 +35,7 @@ func logger(handler func(w http.ResponseWriter, r *http.Request)) func(w http.Re
 
 func main() {
 
-	http.HandleFunc("/foo", logger(foo))
-	http.HandleFunc("/bar", logger(bar))
+	http.HandleFunc("/foo", logger(profile(foo)))
+	http.HandleFunc("/bar", logger(profile(bar)))
 	http.ListenAndServe(":8080", nil)
 }
