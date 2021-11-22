@@ -1,5 +1,11 @@
 package main
 
+import (
+	"fmt"
+	"net/http"
+	"time"
+)
+
 var MirrorList = []string{
 	"http://ftp.am.debian.org/debian/",
 	"http://ftp.at.debian.org/debian/", "http://ftp.by.debian.org/debian/",
@@ -31,3 +37,35 @@ var MirrorList = []string{
 //http://localhost:8080/fastest-mirror
 // => mirror url , latency
 // try retrieving the README file
+
+type response struct {
+	fastestURL string
+	latency    time.Duration
+}
+
+func findFastestMirror() response {
+	urlChan := make(chan string)
+	latencyChan := make(chan time.Duration)
+	for _, url := range MirrorList {
+		go func(url string) {
+			//fmt.Println("url - " + url + " starting")
+			start := time.Now()
+			_, err := http.Get(url)
+			latency := time.Now().Sub(start) / time.Millisecond
+			fmt.Println(latency.String())
+			if err == nil {
+				urlChan <- url
+				latencyChan <- latency
+			}
+		}(url)
+	}
+	return response{<-urlChan, <-latencyChan}
+}
+
+func main() {
+	http.HandleFunc("/fastest-mirror", func(w http.ResponseWriter, r *http.Request) {
+		resp := findFastestMirror()
+		w.Write([]byte(resp.fastestURL + " " + resp.latency.String()))
+	})
+	http.ListenAndServe(":8080", nil)
+}
