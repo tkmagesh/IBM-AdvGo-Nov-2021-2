@@ -5,10 +5,6 @@ import (
 	"sync"
 )
 
-type Worker interface {
-	Task()
-}
-
 type WorkerPool struct {
 	work chan Worker
 	wg   sync.WaitGroup

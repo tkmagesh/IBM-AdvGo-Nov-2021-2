@@ -71,3 +71,15 @@ Closures
 https://www.cyberciti.biz/faq/unix-kill-command-examples/
 
 Pooling
+
+Http Services
+    1. Using the net/http package
+    2. Using the thirdparty routers
+        a. httprouter
+        b. gorilla-mux
+    3. web frameworks
+
+net/http package
+    APIs for building both server & client
+
+    
