@@ -168,7 +168,13 @@ Code Generation
 Test
     go test ./...
     go test -cover ./...
-    
+
+To generate mocks
+    Use https://github.com/vektra/mockery
+    go get github.com/vektra/mockery/v2/.../
+    mockery --all --keeptree
+
 Coverage
     go test ./... -coverprofile=coverage.out
     go tool cover -html=coverage.out
+
