@@ -24,6 +24,8 @@ type AppServiceClient interface {
 	GeneratePrimes(ctx context.Context, in *PrimeRequest, opts ...grpc.CallOption) (AppService_GeneratePrimesClient, error)
 	// client streaming
 	CalculateAverage(ctx context.Context, opts ...grpc.CallOption) (AppService_CalculateAverageClient, error)
+	// bidirectional streaming
+	CheckPrime(ctx context.Context, opts ...grpc.CallOption) (AppService_CheckPrimeClient, error)
 }
 
 type appServiceClient struct {
@@ -109,6 +111,37 @@ func (x *appServiceCalculateAverageClient) CloseAndRecv() (*AverageResponse, err
 	return m, nil
 }
 
+func (c *appServiceClient) CheckPrime(ctx context.Context, opts ...grpc.CallOption) (AppService_CheckPrimeClient, error) {
+	stream, err := c.cc.NewStream(ctx, &AppService_ServiceDesc.Streams[2], "/proto.AppService/CheckPrime", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &appServiceCheckPrimeClient{stream}
+	return x, nil
+}
+
+type AppService_CheckPrimeClient interface {
+	Send(*IsPrimeRequest) error
+	Recv() (*IsPrimeResponse, error)
+	grpc.ClientStream
+}
+
+type appServiceCheckPrimeClient struct {
+	grpc.ClientStream
+}
+
+func (x *appServiceCheckPrimeClient) Send(m *IsPrimeRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *appServiceCheckPrimeClient) Recv() (*IsPrimeResponse, error) {
+	m := new(IsPrimeResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // AppServiceServer is the server API for AppService service.
 // All implementations must embed UnimplementedAppServiceServer
 // for forward compatibility
@@ -119,6 +152,8 @@ type AppServiceServer interface {
 	GeneratePrimes(*PrimeRequest, AppService_GeneratePrimesServer) error
 	// client streaming
 	CalculateAverage(AppService_CalculateAverageServer) error
+	// bidirectional streaming
+	CheckPrime(AppService_CheckPrimeServer) error
 	mustEmbedUnimplementedAppServiceServer()
 }
 
@@ -134,6 +169,9 @@ func (UnimplementedAppServiceServer) GeneratePrimes(*PrimeRequest, AppService_Ge
 }
 func (UnimplementedAppServiceServer) CalculateAverage(AppService_CalculateAverageServer) error {
 	return status.Errorf(codes.Unimplemented, "method CalculateAverage not implemented")
+}
+func (UnimplementedAppServiceServer) CheckPrime(AppService_CheckPrimeServer) error {
+	return status.Errorf(codes.Unimplemented, "method CheckPrime not implemented")
 }
 func (UnimplementedAppServiceServer) mustEmbedUnimplementedAppServiceServer() {}
 
@@ -213,6 +251,32 @@ func (x *appServiceCalculateAverageServer) Recv() (*AverageRequest, error) {
 	return m, nil
 }
 
+func _AppService_CheckPrime_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(AppServiceServer).CheckPrime(&appServiceCheckPrimeServer{stream})
+}
+
+type AppService_CheckPrimeServer interface {
+	Send(*IsPrimeResponse) error
+	Recv() (*IsPrimeRequest, error)
+	grpc.ServerStream
+}
+
+type appServiceCheckPrimeServer struct {
+	grpc.ServerStream
+}
+
+func (x *appServiceCheckPrimeServer) Send(m *IsPrimeResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *appServiceCheckPrimeServer) Recv() (*IsPrimeRequest, error) {
+	m := new(IsPrimeRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // AppService_ServiceDesc is the grpc.ServiceDesc for AppService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -234,6 +298,12 @@ var AppService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "CalculateAverage",
 			Handler:       _AppService_CalculateAverage_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "CheckPrime",
+			Handler:       _AppService_CheckPrime_Handler,
+			ServerStreams: true,
 			ClientStreams: true,
 		},
 	},

@@ -24,7 +24,8 @@ func main() {
 
 	//doRequestResponse(ctx, client)
 	//doServerStreaming(ctx, client)
-	doClientStreaming(ctx, client)
+	//doClientStreaming(ctx, client)
+	doBiDiStreaming(ctx, client)
 }
 
 func doRequestResponse(ctx context.Context, client proto.AppServiceClient) {
@@ -86,4 +87,39 @@ func doClientStreaming(ctx context.Context, client proto.AppServiceClient) {
 		log.Fatalln(err)
 	}
 	fmt.Println("Average : ", response.GetAverage())
+}
+
+func doBiDiStreaming(ctx context.Context, client proto.AppServiceClient) {
+	//sending the requests
+	nos := []int32{5, 2, 6, 3, 1, 7, 9, 4, 8, 10}
+	clientStream, err := client.CheckPrime(ctx)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	done := make(chan bool)
+	go func() {
+		for {
+			response, err := clientStream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				log.Fatalln(err)
+			}
+			fmt.Println(response.GetNum(), response.GetIsPrime())
+		}
+		done <- true
+	}()
+	for _, no := range nos {
+		time.Sleep(500 * time.Millisecond)
+		fmt.Printf("Sending No : %d\n", no)
+		req := &proto.IsPrimeRequest{
+			Num: no,
+		}
+		if er := clientStream.Send(req); er != nil {
+			log.Fatalln(er)
+		}
+	}
+
+	<-done
 }

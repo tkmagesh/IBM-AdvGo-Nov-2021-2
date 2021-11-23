@@ -80,6 +80,29 @@ func (s *server) CalculateAverage(serverStream proto.AppService_CalculateAverage
 	return serverStream.SendAndClose(resp)
 }
 
+func (s *server) CheckPrime(serverStream proto.AppService_CheckPrimeServer) error {
+	for {
+		req, err := serverStream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		no := req.GetNum()
+		isPrime := isPrime(no)
+		time.Sleep(1 * time.Second)
+		resp := &proto.IsPrimeResponse{
+			Num:     no,
+			IsPrime: isPrime,
+		}
+		if err := serverStream.Send(resp); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func main() {
 	s := &server{}
 	listener, err := net.Listen("tcp", ":50051")
