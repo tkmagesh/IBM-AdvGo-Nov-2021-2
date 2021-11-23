@@ -178,3 +178,22 @@ Coverage
     go test ./... -coverprofile=coverage.out
     go tool cover -html=coverage.out
 
+Profiling
+     go test -bench=. -cpuprofile prof.cpu
+
+    Installing pprof
+    go get -u github.com/google/pprof
+
+
+    To view the profile
+    go tool pprof -http=:6060 profiling-demo.test prof.cpu
+
+    For web applications
+        import _ "net/http/pprof"
+
+        ab -n 1000 http://localhost:8080
+
+    To view the profile
+        visit http://localhost:8080/debug/pprof/
+
+        
