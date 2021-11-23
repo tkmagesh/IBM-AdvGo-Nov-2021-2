@@ -163,3 +163,12 @@ Code Generation
 
     To generate code
         go generate ./...
+
+
+Test
+    go test ./...
+    go test -cover ./...
+    
+Coverage
+    go test ./... -coverprofile=coverage.out
+    go tool cover -html=coverage.out
