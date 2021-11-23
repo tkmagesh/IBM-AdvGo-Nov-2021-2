@@ -33,6 +33,16 @@ message AverageResponse{
     int32 average = 1;
 }
 
+/* Bidirectional Streaming */
+message IsPrimeRequest{
+    int32 num = 1;
+}
+
+message isPrimeResponse{
+    int32 num = 1;
+    bool isPrime = 2;
+}
+
 /* Service */
 service AppService{
 
@@ -44,6 +54,9 @@ service AppService{
 
     /* client streaming */
     rpc CalculateAverage(stream AverageRequest) returns (AverageResponse);
+
+    /* bidirectional streaming */
+    rpc CheckPrime(stream IsPrimeRequest) returns (stream isPrimeResponse);
 }
 
 
