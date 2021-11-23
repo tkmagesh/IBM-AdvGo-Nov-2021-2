@@ -87,3 +87,68 @@ Higher Order Functions
     1. A function can be assigned as a value to a variable
     2. A function can be passed as an argument to a function
     3. A function can be returned by another function
+
+
+Web Socket
+    github.com/gorilla/websocket
+
+RPC (Remote Procedure Call)
+    .Net Remoting
+    RMI
+
+Remote
+    Sockets
+Local
+    Named Pipes
+    Sockets
+
+
+RDBMS (Transactions) (Update optimized)
+    Normalization (Integrity of the data is maintained DURING UPDATES)
+        Avoid duplication (reduce redundancy)
+        Updates
+
+    Cost of Normalization
+        READS are costly
+
+Table-1
+    P101, Pencil
+
+Table-2
+    P101, Pencil
+
+1. Read Optimized (data is never updated)
+2. Analytical
+3. Read optimized (append only + very very few updates)
+4. Realtime 
+
+GRPC
+    Data serialization & deserialization - protocol buffers
+    Communication Patterns
+        1. Request & Response
+        2. Server Streaming (One request from client & stream of responses from the server)
+        3. Client Streaming (stream of requests from client & one response from the server)
+        4. Bidirectional Streaming (stream of requests from client & stream of responses from the server)
+    
+Define the message format
+Define the service
+Generate the proxy & the stub
+
+Tools for generating proxy & stub
+    protoc-gen-go
+    protoc-gen-go-grpc
+
+Installation
+    go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+    OR
+
+    brew install protoc-gen-go
+    brew install protoc-gen-go-grpc
+
+    OR
+    Install the binaries from    
+
+command line tool
+    protoc
