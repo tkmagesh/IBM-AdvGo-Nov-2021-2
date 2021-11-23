@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"time"
 
 	"grpc-app/proto"
 
@@ -22,7 +23,8 @@ func main() {
 	ctx := context.Background()
 
 	//doRequestResponse(ctx, client)
-	doServerStreaming(ctx, client)
+	//doServerStreaming(ctx, client)
+	doClientStreaming(ctx, client)
 }
 
 func doRequestResponse(ctx context.Context, client proto.AppServiceClient) {
@@ -61,4 +63,27 @@ func doServerStreaming(ctx context.Context, client proto.AppServiceClient) {
 		}
 		fmt.Println(response.GetPrime())
 	}
+}
+
+func doClientStreaming(ctx context.Context, client proto.AppServiceClient) {
+	nos := []int32{5, 2, 6, 3, 1, 7, 9, 4, 8, 10}
+	clientStream, err := client.CalculateAverage(ctx)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	for _, no := range nos {
+		time.Sleep(500 * time.Millisecond)
+		fmt.Printf("Sending No : %d\n", no)
+		req := &proto.AverageRequest{
+			Num: no,
+		}
+		if er := clientStream.Send(req); er != nil {
+			log.Fatalln(er)
+		}
+	}
+	response, err := clientStream.CloseAndRecv()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println("Average : ", response.GetAverage())
 }
